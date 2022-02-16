@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>MCU: Marvel Cinematic Universe Films</title>
+
+    <!-- ORIGINAL SOURCE LINK TO THE API -->
+    <!-- https://mcuapi.herokuapp.com/docs/ -->
+   
+    
+    <!-- Fonts via Monotype. Licenced for educational use. -->
+    <link href="https://cdn.fonts.net/kit/fa9ee2d0-7e46-11ec-9ce3-0220834439f4/fa9ee2d0-7e46-11ec-9ce3-0220834439f4.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@500;600;700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+     
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Development version of VueJS -->
+    <script src="https://unpkg.com/vue@next"></script> 
+    <!-- Axios for making HTTP requests.  -->
+    <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
+    <!-- NOTE: If you prefer you can use the fetch API instead of axios.
+    https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch  -->
+
+    <!-- NOTE: the below script has a "defer" attribute. It will load only when page is ready -->
+    <!-- Custom JS -->
+    <script defer src="script.js" ></script>
+</head>
+    <body >
+        <main id="app">  
+            
+                <div v-if="loading" id="loader">
+                    <!-- https://loading.io/  -->
+                    <img src="loader.svg"> 
+                </div>
+                
+                <!-- 
+                Using VueJS to loop over all films. 
+                Each one is represented by an image.
+                On click, VueJS opens opens the corresponding film.
+                 -->
+                <nav id="films" v-if="films"> 
+                    <img v-for="(film, filmKey) in films" :key="film.id" class="menuItem"  @click="showFilm(filmKey)"  :src="film.cover_url" > 
+                </nav>
+
+                <article id="film"  v-if="film">
+
+                    <!--
+                    In this banner, the text layout is flush with the bottom of the the image
+                    The text also uses a semi-transparent background so that it stands out better.
+                    Check out the corresponding CSS to see how its done.
+                    -->
+                    <div class="banner">
+                        <img :src="film.cover_url">
+                        <h2 class="text-center">
+                            {{ film.title }} <br/> <span>{{ film.original_title }} </span>
+                        </h2>  
+                    </div>
+
+                    <!--
+                    Flexbox is helpful here to lay out the director and producer widgets. 
+                    Each widget grows to fill available space but wraps when we run out of space.
+                    HTML Markup and corresponding CSS help to differentiate the data from its label. 
+                    -->
+                    <div class="widgets creators">
+                        <div class="widget"> 
+                            <div class="data">{{ film.directed_by }}</div>
+                            <div class="label">Director</div>
+                        </div>
+                        <div class="widget">
+                            <div class="data">{{ film.chronology }}</div>
+                            <div class="label">Chronological Order</div>
+                        </div>
+                    </div> 
+
+                    <!-- Some of the films don't include a trailer within the interface -->
+
+                    <div class="widgets">
+                        <div class="widget trailer">
+                        <iframe :src="film.trailer_url"></iframe>
+                        </div> 
+                    </div>
+
+                    <!--
+                    Generous sized type makes the description come to life.
+                    the first line is bolded using a CSS pseudo class. 
+                    -->
+                    <div class="details"> 
+                        <p> {{ film.overview }} </p>
+                    </div>
+
+                    <!--
+                        Stats widgets are styled similarly to the creators area
+                    -->
+                    <div class="widgets statistics">
+                        <div class="widget"> 
+                            <div class="data">{{ film.release_date }}</div>
+                            <div class="label">Released</div>
+                        </div> 
+                        <div class="widget"> 
+                            <div class="data">
+                                {{ film.duration }}
+                                <span class="unit">mins</span>
+                            </div>
+                            <div class="label">Running Time</div>
+                        </div> 
+                        <div class="widget"> 
+                            <div class="data">
+                                <span class="unit">$</span>
+                                {{ film.box_office }}
+                            </div>
+                            <div class="label">Box Office 
+                                <!-- <img style="width:100px;" alt="Rotten Tomatoes" src="rotten-tomatoes.svg" /> -->
+                            </div>
+                        </div> 
+                    </div> 
+
+                    <div id="credits">
+                        This is a demo page to fetch and display data from an API. Created by <a href="https://malcolms-portfolio-f5e8b8.webflow.io/">Malcolm Darko</a> Original template by<a href="https://nsitu.ca"> Harold Sikkema</a> in the context of Integrated Systems Design 2 in the <a href="https://ixd.sheridancollege.ca/program.html">Interaction Design</a> program at <a href="https://www.sheridancollege.ca/">Sheridan College.</a> Made with <a href="https://v3.vuejs.org/">Vue 3</a>. Data via the <a href="https://mcuapi.herokuapp.com/docs/">Marvel Studios API</a>, MS logo via <a href="https://commons.wikimedia.org/wiki/File:Marvel_Studios_2016_logo.svg">Marvel Studios logo</a>. Fonts via <a href="https://enterprise.monotype.com/en/family/exljbris/antona">Monotype</a>. Thanks to Kevin Feige, Stan Lee and <a href="https://twitter.com/marvelstudios">Marvel Studios</a> for making a difference in the films & comics industry. 
+                    </div>
+
+                </article>
+                <article id="welcome" v-if="!film">
+                    <img src="Marvel_Studios_logo.svg" />
+                </article>
+            </section> 
+        </main>
+    </body>
+</html>
